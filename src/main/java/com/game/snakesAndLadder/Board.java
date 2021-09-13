@@ -7,11 +7,17 @@ import java.util.Optional;
 public class Board {
     private final List<Snake> snakes = new ArrayList<>();
     private final Player player;
+    private final Dice dice;
 
-    public Board(int size, Player player) {
+    public Board(int size, Player player, Dice dice) {
+        this.dice = dice;
         validateSize(size);
         this.player = player;
         this.player.setBoard(this);
+    }
+
+    public List<Snake> getSnakes() {
+        return snakes;
     }
 
     private void validateSize(int size) {
@@ -42,5 +48,9 @@ public class Board {
             Snake snake = snakeMaybe.get();
             player.moveByPosition(snake.getSnakeEndPosition() - snake.getSnakeStartPosition());
         }
+    }
+
+    public Dice getDice() {
+        return dice;
     }
 }

@@ -1,13 +1,17 @@
 package com.game.snakesAndLadder;
 
+import com.game.snakesAndLadder.Dice.CrookedDice;
+import com.game.snakesAndLadder.Dice.NormalDice;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserAcceptanceTests {
     private static final int BOARD_SIZE = 100;
     private final Player player = new Player();
-    private final Board board = new Board(BOARD_SIZE, player);
+    private final Dice dice = new NormalDice();
+    private Board board = new Board(BOARD_SIZE, player, dice);
 
     @Test
     void playerShouldMoveFromInitialPositionToNextByTheNumberOnTheDice() {
@@ -23,6 +27,21 @@ public class UserAcceptanceTests {
                 .thenI().reachAtPosition(7);
     }
 
+    @Test
+    void gameCanBeInitiatedWithAnyDice() {
+        whenI().useDiceType(new NormalDice()).thenI().verifyDiceWorks();
+        whenI().useDiceType(new CrookedDice()).thenI().verifyDiceWorks();
+    }
+
+    private void verifyDiceWorks() {
+        assertDoesNotThrow(player::rollDice);
+    }
+
+    private UserAcceptanceTests useDiceType(Dice dice) {
+        board = new Board(BOARD_SIZE, player, dice);
+        return this;
+    }
+
     private UserAcceptanceTests and() {
         return this;
     }
@@ -34,7 +53,7 @@ public class UserAcceptanceTests {
     }
 
     private UserAcceptanceTests playerPositionIs(int position) {
-        board.diceRolled(position-1);
+        player.moveByPosition(position-1);
         return this;
     }
 
@@ -50,8 +69,8 @@ public class UserAcceptanceTests {
         return this;
     }
 
-    private UserAcceptanceTests rollDiceBy(int numberOnDice) {
-        board.diceRolled(numberOnDice);
+    private UserAcceptanceTests rollDiceBy(int diceNumber) {
+        board.diceRolled(diceNumber);
         return this;
     }
 
