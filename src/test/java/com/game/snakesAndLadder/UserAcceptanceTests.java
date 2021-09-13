@@ -3,11 +3,11 @@ package com.game.snakesAndLadder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class UserAcceptanceTests {
+    private static final int BOARD_SIZE = 100;
     private final Player player = new Player();
+    private final Board board = new Board(BOARD_SIZE, player);
 
     @Test
     void playerShouldMoveFromInitialPositionToNextByTheNumberOnTheDice() {
@@ -16,8 +16,25 @@ public class UserAcceptanceTests {
                 .thenI().reachAtPosition(25);
     }
 
+    @Test
+    void snakeShouldMovePlayerFromItsStartToEndPosition() {
+        given().snakePositionIs(14,7).and().playerPositionIs(12)
+                .whenI().rollDiceBy(2)
+                .thenI().reachAtPosition(7);
+    }
+
+    private UserAcceptanceTests and() {
+        return this;
+    }
+
+    private UserAcceptanceTests snakePositionIs(int snakeStartPosition, int snakeEndPosition) {
+        Snake snake = new Snake(snakeStartPosition, snakeEndPosition);
+        board.addSnake(snake);
+        return this;
+    }
+
     private UserAcceptanceTests playerPositionIs(int position) {
-        player.moveByPosition(position-1);
+        board.diceRolled(position-1);
         return this;
     }
 
@@ -34,10 +51,7 @@ public class UserAcceptanceTests {
     }
 
     private UserAcceptanceTests rollDiceBy(int numberOnDice) {
-        Player playerMock = mock(Player.class);
-        when(playerMock.rollDice()).thenReturn(numberOnDice);
-        int diceNumber = playerMock.rollDice();
-        player.moveByPosition(diceNumber);
+        board.diceRolled(numberOnDice);
         return this;
     }
 
