@@ -46,9 +46,20 @@ public class Board {
 
         if(snakeMaybe.isPresent()) {
             Snake snake = snakeMaybe.get();
+            if (snake instanceof GreenSnake)  {
+                GreenSnake greenSnake = (GreenSnake) snake;
+                if(!greenSnake.isBitten()) {
+                    greenSnake.setBitten(true);
+                    player.moveByPosition(snake.getSnakeEndPosition() - snake.getSnakeStartPosition());
+                }
+                return;
+            }
+
             player.moveByPosition(snake.getSnakeEndPosition() - snake.getSnakeStartPosition());
+
         }
     }
+
 
     public Dice getDice() {
         return dice;
